@@ -1,0 +1,104 @@
+#!/bin/bash
+
+SRPN_REF="./srpn.o"
+SRPN_TEST="java -cp SRPN SRPN"
+
+TUTOR=0
+
+# 1 = target
+# 2 = marks per success
+# 3 = maximum marks
+function check()
+{
+    local marks=0
+    
+    echo "*** Marking $1 (Marks per success: $2) (Maximum marks: $3) ***"
+    for T in $1/??; do
+	echo -en $T &&
+	if [[ $T -nt "$T.result.term" ]]; then
+	    echo -en "\033[31m Updating cache for $T\033[0m" &&
+	    stdbuf -i0 -o0 -e0 $SRPN_REF < $T 1> "$T.result.term" 2>&1 ||
+	    { echo " ERROR - Can't run $SRPN_REF"; exit 1; }
+	fi &&
+	tmp_b_term=$(mktemp) &&
+	stdbuf -i0 -o0 -e0 $SRPN_TEST < $T 1> ${tmp_b_term} 2>&1 &&
+
+	pass=1
+	cmp -s "$T.result.term" $tmp_b_term || { pass=0; echo -en " fail:term"; }
+
+	if (( pass == 1 )); then
+	    echo -en " pass"
+	    marks=$(( marks + $2 ))
+	fi
+	echo
+
+	if (( pass == 0 )); then
+	    echo "Difference in output:"
+	    diff -u "$T.result.term" $tmp_b_term | tail -n +3
+	fi
+
+	rm $tmp_b_term
+	echo ""
+    done
+
+    if (( marks > $3 )); then
+	marks=$3
+    fi
+
+    echo "Marks: $marks"
+    echo ""
+
+    return $marks
+}
+
+do_tests=1
+
+if (( do_tests == 1 )); then
+	echo "trying to compile all java files in the SRPN folder using javac *.java"
+	javac ./SRPN/*.java
+    if (( $TUTOR == 0 )); then
+	#Student version
+	check "t-single" 1 10
+	marks_single=$?
+	check "t-multiple" 2 10
+	marks_multiple=$?
+	check "t-saturation" 4 8
+	marks_sat=$?
+	check "t-obscure" 2 8
+	marks_obs=$?
+    else
+	#Tutor version
+	check "t-single" 1 20
+	marks_single=$?
+	check "t-multiple" 2 20
+	marks_multiple=$?
+	check "t-saturation" 4 20
+	marks_sat=$?
+	check "t-obscure" 2 20
+	marks_obs=$?
+    fi
+fi
+
+marks=$((marks_single + marks_multiple + marks_sat + marks_obs))
+
+if (( TUTOR == 0 )); then
+    echo "***"
+    echo -e "*** t-single:     \033[32m$marks_single\033[0m out of 10"
+    echo -e "*** t-multiple:   \033[32m$marks_multiple\033[0m out of 10"
+    echo -e "*** t-saturation: \033[32m$marks_sat\033[0m out of 8"
+    echo -e "*** t-obscure:    \033[32m$marks_obs\033[0m out of 8"
+    echo -e "*** Final marks for the program: \033[32;1m$marks\033[0m out of 36"
+    echo "***"
+    echo "*** NOTE: This is the student version of the script. We (the tutors) will"
+    echo "***       have some more testcases we will use. The test cases included"
+    echo "***       with this script do not cover all oddities of the srpn.jar program."
+    echo "***       YOUR FINAL MARKS MAY DIFFER DUE TO THIS."
+    echo "***"
+else
+    echo "***"
+    echo -e "*** t-single:     \033[32m$marks_single\033[0m out of 20"
+    echo -e "*** t-multiple:   \033[32m$marks_multiple\033[0m out of 20"
+    echo -e "*** t-saturation: \033[32m$marks_sat\033[0m out of 20"
+    echo -e "*** t-obscure:    \033[32m$marks_obs\033[0m out of 20"
+    echo -e "*** Final marks for the program: \033[32;1m$marks\033[0m out of 80"
+fi
