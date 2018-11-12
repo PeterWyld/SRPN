@@ -4,9 +4,10 @@ import calculator.Calculator;
 
 public class SRPN {    
     public static void main(String[] args) {
-        Calculator sprn = new Calculator();
+        Calculator srpn = new Calculator();
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println(10/-3);
         
         try {
             //Keep on accepting input from the command-line
@@ -21,7 +22,7 @@ public class SRPN {
                 }
                 
                 //Otherwise, (attempt to) process the character
-                sprn.processLine(command);          
+                srpn.processLine(command);          
             }
         } catch(IOException e) {
           System.err.println(e.getMessage());
