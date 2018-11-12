@@ -18,21 +18,18 @@ public class InputFormatter {
 	//check for if a new integer entry has started (otherwise ++ would turn to +, ,+
 	private boolean makingEntry = false;
 	
-	//points to the first integer digit in the entry
-	private int startOfEntry = 0;
-	//points to the character after the last integer in the entry
-	private int endOfEntry = 0;
-	//Details how long an entry is
-	private int lengthOfEntry = 0;
+	private int newIntEntry = 0;
 	
-	public void endAndInputNewEntry(String entry, int currentIndex) {
-		if (makingEntry) {
-			equationList.add(entry);
-			makingEntry = false;
-		}
-		equationList.add(Integer.toString(randInt.nextInt()));
-		startOfEntry = currentIndex + 1; // +1 to skip the character it was just on
-		endOfEntry = currentIndex + 1;
+	private String equationStr = "";
+	
+	private boolean isNegative = false;
+	
+	public InputFormatter(String equationStr) {
+		this.equationStr = equationStr;
+	}
+	
+	private void endAndAddIntEntry() {
+		
 	}
 	
     /**
@@ -41,34 +38,37 @@ public class InputFormatter {
      * @param equationStr: the equation in string form
      * @return equationList: a list of numbers and operations in separate indexes
      */
-    public LinkedList<String> strEquationToList(String equationStr) {
+    public LinkedList<String> strEquationToList() {
+    	
 
     	for (int i = 0; i <= equationStr.length() -1; i++) {
     		currentChar = equationStr.charAt(i);
+    		
+    		if (Utilities.isAnInt(currentChar)) {
+    			makingEntry = true;
+    			newIntEntry *= 10;
+    			newIntEntry += Utilities.parseIntDefault(Character.toString(currentChar), 0);
+    		} else {
+    			if (makingEntry) {
+    				if (isNegative) {
+    					newIntEntry *= -1;
+    				}
+    				equationList.add(Integer.toString(newIntEntry));
+    				makingEntry = false;
+    				newIntEntry = 0;
+    			}
+    		}
     
     		if (currentChar == 'r') {
-    			
+    			equationList.add(Integer.toString(randInt.nextInt()));
     			
     		} else if (currentChar == 'd') {
-    			if (makingEntry) {
-    				equationList.add(equationStr.substring(startOfEntry, endOfEntry));
-    				makingEntry = false;
-    			}
-    			//whatever d does I really have no idea
-    			startOfEntry = i + 1;
-    			endOfEntry = i + 1;
+    			//whatever d does
     			
-    		} else if (currentChar == '-') { //checking whether it is minus operator or negative operand
-    			if (Utilities.isAnInt(equationStr.charAt(i+1))) { //is negative int
-    				if (makingEntry) {
-        				equationList.add(equationStr.substring(startOfEntry, endOfEntry));
-        				makingEntry = false;
-        			}
-    				startOfEntry = i + 1;
-        			endOfEntry = i + 1;
-    			}
+    		} else if (currentChar == '-' && Utilities.isAnInt(equationStr.charAt(i+1))) { //checking whether it is minus operator or negative operand
+    			isNegative
     			
-    		} else if (currentChar == '+' ||
+    		} else if (currentChar == '+' || currentChar == '-' ||
     				currentChar == '*' || currentChar == '/' || 
     				currentChar == '^' || currentChar == '%' ||
     				currentChar == '=') { // if it is an operator or =
@@ -94,11 +94,7 @@ public class InputFormatter {
     					+ Character.toString(currentChar) + "\".");
     			
     		} else { //must be an integer digit to reach this point
-    			if (makingEntry) {
-    				
-    			}
-    			makingEntry = true;
-    			endOfEntry++;
+    			
     		}
     	}
     	return equationList;
