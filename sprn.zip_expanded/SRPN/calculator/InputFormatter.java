@@ -11,26 +11,17 @@ import java.util.Random;
 public class InputFormatter {
 	private LinkedList<String> equationList = new LinkedList<String>();
 	private Random randInt = new Random();
+	private boolean isCommenting = false;
+	private Calculator processor = new Calculator();
 	
-	//keeps a record of current character to reduce searching of linked list
-	private char currentChar = ' ';
-	
-	//check for if a new integer entry has started (otherwise ++ would turn to +, ,+
-	private boolean makingEntry = false;
-	
-	private int newIntEntry = 0;
-	
-	private String equationStr = "";
-	
-	private boolean isNegative = false;
-	
-	public InputFormatter(String equationStr) {
-		this.equationStr = equationStr;
-	}
-	
-	private void endAndAddIntEntry() {
-		
-	}
+	public void processLine(String s) {
+
+        //If an "=" is received, print zero always
+    	if (s.length() > 0) {
+    		strEquationToList(" " + s + " ");
+
+    	}
+    }
 	
     /**
      * A function that will take a full equation in the form of a string and
@@ -38,9 +29,19 @@ public class InputFormatter {
      * @param equationStr: the equation in string form
      * @return equationList: a list of numbers and operations in separate indexes
      */
-    public LinkedList<String> strEquationToList() {
+    public LinkedList<String> strEquationToList(String equationStr) {
+    	//keeps a record of current character to reduce searching of linked list
+    	char currentChar = ' ';
     	
-
+    	//check for if a new integer entry has started (otherwise ++ would turn to {"+","","+"}
+    	boolean makingEntry = false;
+    	
+    	//holds the value of the next int to be entered
+    	int newIntEntry = 0;
+    	
+    	//keeps note of whether the current int entry is negative
+    	boolean isNegative = false;
+    	
     	for (int i = 0; i <= equationStr.length() -1; i++) {
     		currentChar = equationStr.charAt(i);
     		
@@ -66,34 +67,25 @@ public class InputFormatter {
     			//whatever d does
     			
     		} else if (currentChar == '-' && Utilities.isAnInt(equationStr.charAt(i+1))) { //checking whether it is minus operator or negative operand
-    			isNegative
+    			isNegative = true;
     			
     		} else if (currentChar == '+' || currentChar == '-' ||
     				currentChar == '*' || currentChar == '/' || 
-    				currentChar == '^' || currentChar == '%' ||
-    				currentChar == '=') { // if it is an operator or =
-    			if (makingEntry) {
-    				equationList.add(equationStr.substring(startOfEntry, endOfEntry));
-    				makingEntry = false;
-    			}
+    				currentChar == '^' || currentChar == '%' ) { // if it is an operator
+    			
     			equationList.add(Character.toString(currentChar));
-    			startOfEntry = i + 1;
-    			endOfEntry = i + 1;
+			
+    		} else if (currentChar == '=' || currentChar == 'd') {
+    			equationList.add(Character.toString(currentChar));
+    			System.out.println(processor.processEquation(equationList));
+    			equationList.clear();
+    		} else if (currentChar == '#' && equationStr.charAt(i+1) == ' ') {
+    			isCommenting = true;
     			
-    		} else if (currentChar == ' ') {
-    			if (makingEntry) {
-    				equationList.add(equationStr.substring(startOfEntry, endOfEntry));
-    				makingEntry = false;
-    			}
-    			startOfEntry = i + 1;
-    			endOfEntry = i + 1;
-    			
-    		} else if (!Utilities.isAnInt(currentChar)) {
+    		} else if (!Utilities.isAnInt(currentChar) && currentChar != ' ') {
     			//if it is an invalid character
     			System.out.println("Unrecognised operator or operand \"" 
     					+ Character.toString(currentChar) + "\".");
-    			
-    		} else { //must be an integer digit to reach this point
     			
     		}
     	}

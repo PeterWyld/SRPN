@@ -5,39 +5,15 @@ import java.util.LinkedList;
 import java.util.Stack;
 
 public class Calculator {
-	private StringBuilder equationFormer = new StringBuilder();
-	private boolean commenting = false;
-	
-	
-    public void processLine(String s) {
-    	int result = 0;
-        //If an "=" is received, print zero always
-    	if (s.length() > 0) {
-    		equationFormer.append(s);
-        	equationFormer.append(" "); //used as a separator in the same way as a newline
-	        if (s.charAt(s.length()-1) == '=') {
-	            //System.out.println(equationFormer.toString());
-	            result = processEquation(equationFormer.toString());
-	            System.out.println(result);
-	            equationFormer = new StringBuilder();
-	         
-	        	equationFormer.append(s);
-	        	equationFormer.append(" "); //used as a seperator in the same way as a newline
-	        }
-    	}
-    }
-    
+	Stack<Integer> operands = new Stack<Integer>();
+	     
     /**
      * 
      * @param equationStr
      * @return the result of the equation. If there was a error then it will return null
      */
-    public int processEquation(String equationStr) {
-    	InputFormatter formatter = new InputFormatter();
-    	LinkedList<String> equationQueue = formatter.strEquationToList(equationStr); //used as a queue
-    	Stack<Integer> operands = new Stack<Integer>();
+    public int processEquation(LinkedList<String> equationQueue) throws EmptyStackException {
     	
-    	equationQueue.add("="); //Convenient sign of when the operation has ended
     	boolean notFoundEquals = true;
     	String currentVal = ""; //reduces stack accessing
     	int newVal = 0;
@@ -52,20 +28,19 @@ public class Calculator {
     			if (currentVal.equals("=")) { // found an =	
     				notFoundEquals = false;
     			} else {
-    				try {
-    					/*removes the currentVal (an operator) from the queue
-    					 * and two operands from the 
+    				if (operands.size() >= 2) {
+    					/* removes the currentVal (an operator) from the queue
+    					 * and two operands from the stack (if there are enough items otherwise throw an EmptySteakException)
     					 */
     					newVal = doOperation(operands.pop(), operands.pop(), equationQueue.pop());
     					operands.push(newVal);
-    				} catch (EmptyStackException e) {
-    					System.out.print("Stack underflow");
-    					return -1;
+    				} else {
+    					throw new EmptyStackException();
     				}
     			}
     		}
     	}
-    	return operands.pop();
+    	return operands.peek();
     }
     
     public int doOperation(int numb1, int numb2, String operation) {
@@ -84,7 +59,12 @@ public class Calculator {
 	    		output = numb2 / numb1;
 	    		break;
 	    	case "^" :
-	    		output = (int) Math.pow(numb2, numb1);
+	    		if (numb1 >= 0) {
+	    			output = (int) Math.pow(numb2, numb1);
+	    		} else {
+	    			System.out.println("Negative power.");
+	    			output = -1;
+	    		}
 	    		break;
 	    	case "%" :
 	    		output = numb2 % numb1;
