@@ -90,25 +90,19 @@ public class InputFormatter {
 	        			equationList.add(Integer.toString(randInt[randIntIndex]));
 	        			randIntIndex++;
 	        			if (randIntIndex > 22) {
-	        				
+	        				randIntIndex = 0;
 	        			}
-	        			
-	        		} else if (currentChar == 'd') {
-	        			//whatever d does
 	        			
 	        		} else if (currentChar == '-' && Utilities.isAnInt(equationStr.charAt(i+1))) { //checking whether it is minus operator or negative operand
 	        			isNegative = true;
 	        			
-	        		} else if (currentChar == '+' || currentChar == '-' ||
-	        				currentChar == '*' || currentChar == '/' || 
-	        				currentChar == '^' || currentChar == '%' ) { // if it is an operator
-	        			
+	        		} else if (processor.isOperator(currentChar) || currentChar == 'd' ) { // if it is an operator or d
 	        			equationList.add(Character.toString(currentChar));
 	    			
-	        		} else if (currentChar == '=' || currentChar == 'd') {
+	        		} else if (currentChar == '=') {
 	        			equationList.add(Character.toString(currentChar));
 	        			try {
-	        				System.out.println(processor.processEquation(equationList));
+	        				processor.processEquation(equationList);
 	        			} catch (EmptyStackException e) {
 	        				System.out.println("Stack underflow.");
 	        			} catch (StackOverflowError e) {
@@ -127,6 +121,7 @@ public class InputFormatter {
 	    		}
     		}
     	}
+    	processor.processEquation(equationList);
     	return equationList;
     }
 }
