@@ -77,9 +77,10 @@ public class Calculator {
     	int standardFormExponent = (int) (Math.pow(10, Math.log10(octal) + 1));
     	int output = 0;
 		for (int digit = standardFormExponent; digit >= 1; digit /= 10) {
-			output += octal/standardFormExponent - octal/(standardFormExponent*10);
+			output += octal/standardFormExponent - (octal/(standardFormExponent*10))*10;
 			output *= 8;
 		}
+		output /= 8;
 		return output;
     }
     
