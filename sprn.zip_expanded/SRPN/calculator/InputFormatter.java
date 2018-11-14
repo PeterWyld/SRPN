@@ -49,6 +49,10 @@ public class InputFormatter {
     	//keeps note of whether the current int entry is negative
     	boolean isNegative = false;
     	
+    	//if a number begins with 0 then it takes it in as an octal (e.g. 010 -> 8
+    	boolean isOctal = false;
+    	
+    	
     	for (int i = 0; i <= equationStr.length() -1; i++) {
     		currentChar = equationStr.charAt(i);
     		
@@ -60,6 +64,12 @@ public class InputFormatter {
     		} else {
     		
 	    		if (Utilities.isAnInt(currentChar)) {
+	    			if (!makingEntry && currentChar == '0') { //if the first char of an int is 0
+	    				isOctal = true;
+	    			}
+	    			if (isOctal && (currentChar == '9' || currentChar == '8')) {
+	    				isOctal = false;
+	    			}
 	    			makingEntry = true;
 	    			newIntEntry *= 10;
 	    			newIntEntry += Utilities.parseIntDefault(Character.toString(currentChar), 0);
@@ -67,6 +77,9 @@ public class InputFormatter {
 	    			if (makingEntry) {
 	    				if (isNegative) {
 	    					newIntEntry *= -1;
+	    				}
+	    				if (isOctal) {
+	    					processor.octalToDenary(newIntEntry);
 	    				}
 	    				equationList.add(Integer.toString(newIntEntry));
 	    				makingEntry = false;
