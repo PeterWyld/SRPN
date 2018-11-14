@@ -1,6 +1,8 @@
 package calculator;
 
+import java.util.EmptyStackException;
 import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.Random;
 
 /**
@@ -10,14 +12,19 @@ import java.util.Random;
  */
 public class InputFormatter {
 	private LinkedList<String> equationList = new LinkedList<String>();
-	private Random randInt = new Random();
+	private int[] randInt = {1804289383, 846930886, 1681692777, 1714636915, 1957747793, 
+			424238335, 719885386, 1649760492, 596516649, 1189641421, 1025202362,
+			1350490027, 783368690, 1102520059, 2044897763, 1967513926, 1365180540,
+			1540383426, 304089172, 1303455736, 35005211, 521595368};
+	private int randIntIndex = 0;
+
 	private boolean isCommenting = false;
 	private Calculator processor = new Calculator();
 	
 	public void processLine(String s) {
 
         //If an "=" is received, print zero always
-    	if (s.length() > 0) {
+		if (s.length() > 0) {
     		strEquationToList(" " + s + " ");
 
     	}
@@ -45,48 +52,66 @@ public class InputFormatter {
     	for (int i = 0; i <= equationStr.length() -1; i++) {
     		currentChar = equationStr.charAt(i);
     		
-    		if (Utilities.isAnInt(currentChar)) {
-    			makingEntry = true;
-    			newIntEntry *= 10;
-    			newIntEntry += Utilities.parseIntDefault(Character.toString(currentChar), 0);
-    		} else {
-    			if (makingEntry) {
-    				if (isNegative) {
-    					newIntEntry *= -1;
-    				}
-    				equationList.add(Integer.toString(newIntEntry));
-    				makingEntry = false;
-    				newIntEntry = 0;
+    		if (isCommenting) {
+    			if (currentChar == '#' && equationStr.charAt(i+1) == ' ') {
+    				isCommenting = false;
     			}
-    		}
-    
-    		if (currentChar == 'r') {
-    			equationList.add(Integer.toString(randInt.nextInt()));
     			
-    		} else if (currentChar == 'd') {
-    			//whatever d does
-    			
-    		} else if (currentChar == '-' && Utilities.isAnInt(equationStr.charAt(i+1))) { //checking whether it is minus operator or negative operand
-    			isNegative = true;
-    			
-    		} else if (currentChar == '+' || currentChar == '-' ||
-    				currentChar == '*' || currentChar == '/' || 
-    				currentChar == '^' || currentChar == '%' ) { // if it is an operator
-    			
-    			equationList.add(Character.toString(currentChar));
-			
-    		} else if (currentChar == '=' || currentChar == 'd') {
-    			equationList.add(Character.toString(currentChar));
-    			System.out.println(processor.processEquation(equationList));
-    			equationList.clear();
-    		} else if (currentChar == '#' && equationStr.charAt(i+1) == ' ') {
-    			isCommenting = true;
-    			
-    		} else if (!Utilities.isAnInt(currentChar) && currentChar != ' ') {
-    			//if it is an invalid character
-    			System.out.println("Unrecognised operator or operand \"" 
-    					+ Character.toString(currentChar) + "\".");
-    			
+    		} else {
+    		
+	    		if (Utilities.isAnInt(currentChar)) {
+	    			makingEntry = true;
+	    			newIntEntry *= 10;
+	    			newIntEntry += Utilities.parseIntDefault(Character.toString(currentChar), 0);
+	    		} else {
+	    			if (makingEntry) {
+	    				if (isNegative) {
+	    					newIntEntry *= -1;
+	    				}
+	    				equationList.add(Integer.toString(newIntEntry));
+	    				makingEntry = false;
+	    				newIntEntry = 0;
+	    			}
+	    			
+	    			if (currentChar == 'r') {
+	        			equationList.add(Integer.toString(randInt[randIntIndex]));
+	        			randIntIndex++;
+	        			if (randIntIndex > 22) {
+	        				
+	        			}
+	        			
+	        		} else if (currentChar == 'd') {
+	        			//whatever d does
+	        			
+	        		} else if (currentChar == '-' && Utilities.isAnInt(equationStr.charAt(i+1))) { //checking whether it is minus operator or negative operand
+	        			isNegative = true;
+	        			
+	        		} else if (currentChar == '+' || currentChar == '-' ||
+	        				currentChar == '*' || currentChar == '/' || 
+	        				currentChar == '^' || currentChar == '%' ) { // if it is an operator
+	        			
+	        			equationList.add(Character.toString(currentChar));
+	    			
+	        		} else if (currentChar == '=' || currentChar == 'd') {
+	        			equationList.add(Character.toString(currentChar));
+	        			try {
+	        				System.out.println(processor.processEquation(equationList));
+	        			} catch (EmptyStackException e) {
+	        				System.out.println("Stack underflow.");
+	        			} catch (StackOverflowError e) {
+	        				System.out.println("Stack overflow.");
+	        			}
+	        			equationList.clear();
+	        		} else if (currentChar == '#' && equationStr.charAt(i+1) == ' ') {
+	        			isCommenting = true;
+	        			
+	        		} else if (!Utilities.isAnInt(currentChar) && currentChar != ' ') {
+	        			//if it is an invalid character
+	        			System.out.println("Unrecognised operator or operand \"" 
+	        					+ Character.toString(currentChar) + "\".");
+	        			
+	        		}
+	    		}
     		}
     	}
     	return equationList;
