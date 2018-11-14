@@ -79,7 +79,7 @@ public class InputFormatter {
 	    					newIntEntry *= -1;
 	    				}
 	    				if (isOctal) {
-	    					processor.octalToDenary(newIntEntry);
+	    					newIntEntry = processor.octalToDenary(newIntEntry);
 	    				}
 	    				equationList.add(Integer.toString(newIntEntry));
 	    				makingEntry = false;

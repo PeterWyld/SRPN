@@ -74,10 +74,10 @@ public class Calculator {
     }
     
     public int octalToDenary(int octal) {
-    	int standardFormExponent = (int) (Math.pow(10, Math.log10(octal) + 1));
+    	int standardFormExponent = (int) (Math.pow(10, Math.floor(Math.log10(octal))));
     	int output = 0;
 		for (int digit = standardFormExponent; digit >= 1; digit /= 10) {
-			output += octal/standardFormExponent - (octal/(standardFormExponent*10))*10;
+			output += octal/digit - (octal/(digit*10))*10;
 			output *= 8;
 		}
 		output /= 8;
