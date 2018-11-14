@@ -101,7 +101,6 @@ public class InputFormatter {
 	    			
 	        		} else if (currentChar == '=') {
 	        			equationList.add(Character.toString(currentChar));
-	        			//commit
 	        			try {
 	        				processor.processEquation(equationList);
 	        			} catch (EmptyStackException e) {
