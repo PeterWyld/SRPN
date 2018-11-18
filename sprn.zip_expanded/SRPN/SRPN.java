@@ -1,9 +1,8 @@
 import java.io.*;
-import calculator.InputFormatter;
 
 public class SRPN {    
     public static void main(String[] args) {
-    	InputFormatter srpn = new InputFormatter();
+    	RPNCalculator srpn = new RPNCalculator();
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         

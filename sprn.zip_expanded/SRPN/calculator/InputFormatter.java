@@ -2,8 +2,6 @@ package calculator;
 
 import java.util.EmptyStackException;
 import java.util.LinkedList;
-import java.util.Iterator;
-import java.util.Random;
 
 /**
  * 
@@ -96,19 +94,9 @@ public class InputFormatter {
 	        		} else if (currentChar == '-' && Utilities.isAnInt(equationStr.charAt(i+1))) { //checking whether it is minus operator or negative operand
 	        			isNegative = true;
 	        			
-	        		} else if (processor.isOperator(currentChar) || currentChar == 'd' ) { // if it is an operator or d
+	        		} else if (processor.isOperator(currentChar) || currentChar == 'd'
+	        				|| currentChar == '=') { // if it is an operator or d
 	        			equationList.add(Character.toString(currentChar));
-	    			
-	        		} else if (currentChar == '=') {
-	        			equationList.add(Character.toString(currentChar));
-	        			try {
-	        				processor.processEquation(equationList);
-	        			} catch (EmptyStackException e) {
-	        				System.out.println("Stack underflow.");
-	        			} catch (StackOverflowError e) {
-	        				System.out.println("Stack overflow.");
-	        			}
-	        			equationList.clear();
 	        		} else if (currentChar == '#' && equationStr.charAt(i+1) == ' ') {
 	        			isCommenting = true;
 	        			
@@ -121,7 +109,12 @@ public class InputFormatter {
 	    		}
     		}
     	}
-    	processor.processEquation(equationList);
+    	try {
+			processor.processEquation(equationList);
+		} catch (EmptyStackException e) {
+			System.out.println("Stack underflow.");
+		}
+		equationList.clear();
     	return equationList;
     }
 }

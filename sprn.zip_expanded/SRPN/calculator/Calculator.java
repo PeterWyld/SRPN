@@ -1,6 +1,6 @@
 package calculator;
 
-import java.util.Arrays;
+
 import java.util.EmptyStackException;
 import java.util.LinkedList;
 import java.util.Stack;
@@ -19,14 +19,15 @@ public class Calculator {
     	int newVal = 0;
     	Object[] stackArr;
     	
-    	for(int i = 0; i <= equationQueue.size() -1; i++) {
+    	while(!equationQueue.isEmpty()) {
     		currentVal = equationQueue.peek();
     		if (Utilities.isAnInt(currentVal)) {
     			//takes off the first item and adds it to the stack
-    			operands.add(Utilities.parseIntDefault(equationQueue.pop(),0));
+    			addIntToStack(Utilities.parseIntDefault(equationQueue.pop(),0));
     			
-    		} else { //is an operand, d, or =
+    		} else { //is an operator, d, or =
     			if (currentVal.equals("=")) { // found an =	
+    				equationQueue.pop(); //removing the =
     				System.out.println(operands.peek());
     			} else {
     				if (isOperator(currentVal.charAt(0))) {
@@ -36,7 +37,7 @@ public class Calculator {
 							 */
 							try {
 		    					newVal = doOperation(operands.pop(), operands.pop(), equationQueue.pop());
-		    					operands.push(newVal);
+		    					addIntToStack(newVal);
 							} catch (IllegalArgumentException e) {
 								System.out.println(e.getMessage());
 							}
@@ -46,7 +47,7 @@ public class Calculator {
     				} else { //if the val is d
     					stackArr = operands.toArray();
     					for (int j = 0; j <= stackArr.length -1 ; j++) {
-    						System.out.println(stackArr[i]);
+    						System.out.println(stackArr[j]);
     					}
     				}
     			}
@@ -75,8 +76,8 @@ public class Calculator {
 	    		break;
 	    	case "/" :
 	    		if (numb1 == 0) {
-	    			operands.push(numb2);
-	    			operands.push(numb1);
+	    			addIntToStack(numb2);
+	    			addIntToStack(numb1);
 	    			throw new IllegalArgumentException("Divide by 0.");
 	    		} else {
 	    			output = numb2 / numb1;
@@ -86,15 +87,15 @@ public class Calculator {
 	    		if (numb1 >= 0) {
 	    			output = (int) Math.pow(numb2, numb1);
 	    		} else {
-	    			operands.push(numb2);
-	    			operands.push(numb1);
+	    			addIntToStack(numb2);
+	    			addIntToStack(numb1);
 	    			throw new IllegalArgumentException("Negative power.");
 	    		}
 	    		break;
 	    	case "%" :
 	    		if (numb2 == 0) {
-	    			operands.push(numb2);
-	    			operands.push(numb1);
+	    			addIntToStack(numb2);
+	    			addIntToStack(numb1);
 	    			throw new IllegalArgumentException("Divide by 0.");
 	    		} else if (numb1 == 0) {
 	    			System.out.println("Floating point exception");
@@ -126,5 +127,14 @@ public class Calculator {
     		return false;
     	}
     
+    }
+    
+    private void addIntToStack(int item) {
+    	if (operands.size() > 23) {
+    		operands.push(item);
+    	} else {
+    		System.out.println("Stack overflow.");
+    	}
+    	
     }
 }
