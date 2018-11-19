@@ -1,7 +1,7 @@
 
 
 public class RPNCalculator {
-	private FixedSizeStack<Integer> operands = new FixedSizeStack<Integer>(23);
+	private FixedSizeStack<Integer> operands = new FixedSizeStack<Integer>(22);
 	private Processor processor = new Processor();
 	RPNFormatter formatter = new RPNFormatter();
 	
