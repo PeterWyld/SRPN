@@ -1,3 +1,4 @@
+
 public class RPNFormatter {
 	private int[] randInt = {1804289383, 846930886, 1681692777, 1714636915, 1957747793, 
 			424238335, 719885386, 1649760492, 596516649, 1189641421, 1025202362,
@@ -46,6 +47,7 @@ public class RPNFormatter {
     	
     	while(index <= equationChars.length -2) {
     		index++;
+    		
     		if (isCommenting) {
     			if (equationChars[index] == '#' && equationChars[index+1] == ' ') {
     				isCommenting = false;

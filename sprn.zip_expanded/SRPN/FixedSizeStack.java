@@ -2,7 +2,6 @@ import java.util.Stack;
 
 /**
  * 
- * @author Peter Wyld
  * This Class is the same as a stack except that a maximum size can be defined
  * during instantiation. (default is 10)
  * @param <E>
