@@ -1,56 +1,72 @@
-
+/**
+ * The processor class contains some basic Mathematical methods
+ */
 public class Processor {
 	
-	//https://stackoverflow.com/questions/1657887/how-should-i-throw-a-divide-by-zero-exception-in-java-without-actually-dividing
-    //COMPLETE CITATION
-	
-	//do saturation citation
-	 public int doOperation(int numb1, int numb2, Character operation) {
-		float floatNumb1 = numb1;
-		float floatNumb2 = numb2;
-		//numbers are made into floats so that they can go above/below Integer.MAX/MIN_VALUE
-		//when the result is cast to an int it will be capped appropriately
-		
-    	int output = 0;
+	/**
+	 * This function can be used to do an operation on two numbers
+	 * <br> NOTE: if floatNumb2 == 0 and the operation is % then it will result in a system exit
+	 * @param floatNumb1 The first number in the operation
+	 * @param floatNumb2 The second number in the operation
+	 * @param operation The operation to be performed
+	 * @return the result of the operation bounded by the max and min values of an integer
+	 * @throws IllegalArgumentException If the operation would attempt to divide by zero,
+	 * put something to a negative power or if operation is unrecognised (not a member of {+,-,*,/,%,^})
+	 * <br>
+	 * Citations: <br>
+	 *  (Joren, 2009): Use of IllegalArgumentException and exception messages <br>
+	 *  (user207421, 2011): Use of br tags in javadoc <br>
+	 *  (Boddington, 2015): Use of double..........<br>
+	 */
+	 public double doOperation(double floatNumb1, double floatNumb2, Character operation) {
+    	double output = 0;
     	switch (operation) {
 	    	case '+' :
-	    		output = (int) (floatNumb2 + floatNumb1);
+	    		output = (floatNumb1 + floatNumb2);
 	    		break;
 	    	case '-' :
-	    		output = (int) (floatNumb2 - floatNumb1);
+	    		output = (floatNumb1 - floatNumb2);
 	    		break;
 	    	case '*' :
-	    		output = (int) (floatNumb2 * floatNumb1);
+	    		output = (floatNumb1 * floatNumb2);
 	    		break;
 	    	case '/' :
-	    		if (numb1 == 0) {
+	    		if (floatNumb1 == 0.0) {
 	    			throw new IllegalArgumentException("Divide by 0.");
 	    		} else {
-	    			output = (int) (floatNumb2 / floatNumb1);
+	    			output = (floatNumb1 / floatNumb2);
 	    		}
 	    		break;
 	    	case '^' :
-	    		if (numb1 >= 0) {
-	    			output = (int) Math.pow(numb2, numb1);
+	    		if (floatNumb1 >= 0.0) {
+	    			output = Math.pow(floatNumb1, floatNumb2);
 	    		} else {
 	    			throw new IllegalArgumentException("Negative power.");
 	    		}
 	    		break;
 	    	case '%' :
-	    		if (numb2 == 0) {
+	    		if (floatNumb2 == 0) {
 	    			throw new IllegalArgumentException("Divide by 0.");
-	    		} else if (numb1 == 0) {
+	    		} else if (floatNumb2 == 0) {
 	    			System.out.println("Floating point exception");
 	    			System.exit(0);
 	    		}
-	    		output = (int) (floatNumb2 % floatNumb1);
+	    		output = (floatNumb1 % floatNumb2);
 	    		break;
+    		default:
+    			throw new IllegalArgumentException("Unrecognised operator");
     	}
+    	
+    	if (output > Integer.MAX_VALUE) {
+			output = Integer.MAX_VALUE;
+		} else if (output < Integer.MIN_VALUE){
+			output = Integer.MIN_VALUE;
+		}
 		return output;
     }
 	    
  	/**
- 	 * Takes in an octal and converts it to a decimal number
+ 	 * Takes in an octal and converts it to a decimal number <br>
  	 * If the number has a 9 or an 8 in it (i.e. it was actually a decimal number) then
  	 * it returns the original number
  	 * @param octal: a number in base 8
@@ -60,6 +76,7 @@ public class Processor {
     	int standardFormExponent = (int) (Math.pow(10, Math.floor(Math.log10(octal))));
     	int output = 0;
     	int currentDigit = 0;
+    	
 		for (int digit = standardFormExponent; digit >= 1; digit /= 10) {
 			currentDigit = octal/digit - (octal/(digit*10))*10;
 			if (currentDigit == 9 || currentDigit == 8) {
@@ -69,13 +86,13 @@ public class Processor {
 				output *= 8;
 			}	
 		}
+		
 		output /= 8; //because the loop above will *8 one too many times
 		return output;
     }
     
     /**
-     * Checks if a given char is one of +,-,/,*,%,^ and returns true if it is
-     * otherwise it returns false
+     * Checks if a given char is one of +,-,/,*,%,^ 
      * @param operator : the char to be checked
      * @return true if operator is an operator, false otherwise
      */
@@ -83,6 +100,7 @@ public class Processor {
     	if (operator == '+' || operator == '-' ||
     				operator == '*' || operator == '/' || 
     				operator == '^' || operator == '%') {
+    		
     		return true;
     	} else {
     		return false;
@@ -91,7 +109,8 @@ public class Processor {
     }
     
     /**
-     * checks if a given string is an int
+     * Checks if a given string is an int
+     * @param str the string to be checked
      * @return true if it is false otherwise
      */
     public boolean isAnInt(String str) {

@@ -17,7 +17,7 @@ public class SRPN {
                   System.exit(0);
                 }
                 
-                //Otherwise, (attempt to) process the character
+                //Otherwise process the line
                 srpn.processLine(command);          
             }
         } catch(IOException e) {
@@ -26,3 +26,10 @@ public class SRPN {
         }
     }
 }
+
+/* REFERENCES
+ * Joren, 2009. How should I throw a divide by zero exception in Java without actually dividing by zero?
+ * [Online]. StackOverflow. Available from: https://stackoverflow.com/questions/1657887/how-should-i-throw-a-divide-by-zero-exception-in-java-without-actually-dividing?answertab=votes#tab-top
+ * 		The source influenced me to use a IllegalArguementException as well as telling me
+ * 		how I could put a message in the exception.
+ */	
