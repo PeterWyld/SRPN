@@ -69,7 +69,7 @@ public class RPNCalculator {
 					temp1 = operands.pop();
 					
 					try {
-    					newVal = processor.doOperation(temp2, temp1, (Character) currentVal);
+    					newVal = processor.doOperation(temp1, temp2, (Character) currentVal);
     					operands.push(newVal);
 					} catch (IllegalArgumentException e) {
 						operands.push(temp2);

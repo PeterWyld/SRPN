@@ -18,7 +18,6 @@ public class RPNFormatter {
 	 */
 	private int index = -1;
 	
-	//I used a char array so that I could change values in cases like "3 +3" -> "3 3+"
 	private char[] equationChars;
 	
 	//keeps a record if it is commenting so its state will persist after newlines
@@ -120,17 +119,16 @@ public class RPNFormatter {
 	        				return Character.valueOf(equationChars[index]);
 	        			}
 	        			
-	        		} else if (equationChars[index] == '=') {
+	        		} else if (equationChars[index] == '=' || equationChars[index] == 'd') {
 	        			return (Character) equationChars[index];
 	        			
-	        		// if it is an operator, d or =
-	        		} else if (processor.isOperator(equationChars[index]) || 
-	        				equationChars[index] == 'd') { 
-	        			
+	        		} else if (processor.isOperator(equationChars[index])) {
 	        			//if an = is preceded by an operation the order is switched
 	        			if (equationChars[index+1] == '='){
 	        				equationChars[index+1] = equationChars[index];
 	        				return (Character) '=';
+	        			} else {
+	        				return (Character) equationChars[index];
 	        			}
 	        			
 	        		} else if (equationChars[index] == '#' && equationChars[index+1] == ' ') {

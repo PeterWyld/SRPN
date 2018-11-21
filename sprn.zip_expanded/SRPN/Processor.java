@@ -15,8 +15,6 @@ public class Processor {
 	 * <br>
 	 * Citations: <br>
 	 *  (Joren, 2009): Use of IllegalArgumentException and exception messages <br>
-	 *  (user207421, 2011): Use of br tags in javadoc <br>
-	 *  (Boddington, 2015): Use of double..........<br>
 	 */
 	 public double doOperation(double floatNumb1, double floatNumb2, Character operation) {
     	double output = 0;
