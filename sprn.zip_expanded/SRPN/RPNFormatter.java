@@ -3,12 +3,12 @@
  * The string for the class can be set with setString
  */
 public class RPNFormatter {
+	private Processor processor = new Processor();
 	private int[] randInt = {1804289383, 846930886, 1681692777, 1714636915, 1957747793, 
 			424238335, 719885386, 1649760492, 596516649, 1189641421, 1025202362,
 			1350490027, 783368690, 1102520059, 2044897763, 1967513926, 1365180540,
 			1540383426, 304089172, 1303455736, 35005211, 521595368};
 	private int randIntIndex = 0;
-	private Processor processor = new Processor();
 
 	/**
 	 * points to the current char in the array
@@ -29,7 +29,7 @@ public class RPNFormatter {
 	 * @param equationStr the new line to take values from
 	 */
 	public void setString(String equationStr) {
-		equationStr = equationStr + " "; //used as a seperator 
+		equationStr = equationStr + " "; //used as a separator 
 		equationChars = equationStr.toCharArray(); //is "(equationStr + " ").toCharArray();" bad code?
 		index = -1;
 	}
@@ -54,6 +54,9 @@ public class RPNFormatter {
     	//before sending the value back the octal is converted to decimal
     	boolean isOctal = false;
     	
+    	//switched to true if an "octal" has an 8 or 9 as a digit
+    	boolean isFailedOctal = false;
+    	
     	
     	while(index <= equationChars.length -2) {
     		index++;
@@ -75,7 +78,7 @@ public class RPNFormatter {
 	    			if (isOctal && (equationChars[index] == '9' ||
 	    					equationChars[index] == '8')) { 
 	    				
-	    				isOctal = false;
+	    				isFailedOctal = false;
 	    			}
 	    			
 	    			makingEntry = true;
@@ -86,7 +89,7 @@ public class RPNFormatter {
 	    		} else {
 	    			if (makingEntry) {
 	    				if (isOctal) {
-	    					newIntEntry = processor.octalToDenary((int) newIntEntry);
+	    					newIntEntry = processor.octalToDecimal((long) newIntEntry);
 	    				}
 	    				
 	    				if (isNegative) {
@@ -99,10 +102,21 @@ public class RPNFormatter {
 		    			} else if (newIntEntry < Integer.MIN_VALUE){
 		    				newIntEntry = Integer.MIN_VALUE;
 		    			}
-	    				return Double.valueOf(newIntEntry);
+		    	    	
+		    	    	if (isFailedOctal) {
+		    	    		//if making an octal failed then the program will cancel the output and move on to the next character
+		    	    		makingEntry = false;
+		    	    		isOctal = false;
+		    	    		isNegative = false;
+		    	    		isFailedOctal = false;
+		    	    		newIntEntry = 0;
+		    	    		
+		    	    	} else {
+		    	    		return Double.valueOf(newIntEntry);
+		    	    	}
 	    			}
 	    			
-	    			//sends back one of 22 psuedo-random numbers
+	    			//sends back one of 22 pseudo-random numbers
 	    			if (equationChars[index] == 'r') {
 	        			randIntIndex++;
 	        			if (randIntIndex > 22) {

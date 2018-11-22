@@ -72,8 +72,8 @@ public class RPNCalculator {
     					newVal = processor.doOperation(temp1, temp2, (Character) currentVal);
     					operands.push(newVal);
 					} catch (IllegalArgumentException e) {
-						operands.push(temp2);
 						operands.push(temp1);
+						operands.push(temp2);
 						System.out.println(e.getMessage());
 					}
 					

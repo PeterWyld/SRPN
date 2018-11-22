@@ -29,23 +29,23 @@ public class Processor {
 	    		output = (floatNumb1 * floatNumb2);
 	    		break;
 	    	case '/' :
-	    		if (floatNumb1 == 0.0) {
+	    		if (floatNumb2 == 0.0) {
 	    			throw new IllegalArgumentException("Divide by 0.");
 	    		} else {
 	    			output = (floatNumb1 / floatNumb2);
 	    		}
 	    		break;
 	    	case '^' :
-	    		if (floatNumb1 >= 0.0) {
+	    		if (floatNumb2 >= 0.0) {
 	    			output = Math.pow(floatNumb1, floatNumb2);
 	    		} else {
 	    			throw new IllegalArgumentException("Negative power.");
 	    		}
 	    		break;
 	    	case '%' :
-	    		if (floatNumb2 == 0) {
+	    		if (floatNumb2 == 0.0) {
 	    			throw new IllegalArgumentException("Divide by 0.");
-	    		} else if (floatNumb2 == 0) {
+	    		} else if (floatNumb1 == 0.0) {
 	    			System.out.println("Floating point exception");
 	    			System.exit(0);
 	    		}
@@ -70,15 +70,15 @@ public class Processor {
  	 * @param octal: a number in base 8
  	 * @return the octal converted to decimal or the original decimal number
  	 */
-    public int octalToDenary(int octal) {
+    public int octalToDecimal(long octal) {
     	int standardFormExponent = (int) (Math.pow(10, Math.floor(Math.log10(octal))));
     	int output = 0;
     	int currentDigit = 0;
     	
 		for (int digit = standardFormExponent; digit >= 1; digit /= 10) {
-			currentDigit = octal/digit - (octal/(digit*10))*10;
+			currentDigit = (int) (octal/digit - (octal/(digit*10))*10);
 			if (currentDigit == 9 || currentDigit == 8) {
-				return octal;
+				return (int) octal;
 			} else {
 				output += currentDigit;
 				output *= 8;
